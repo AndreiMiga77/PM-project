@@ -1,13 +1,12 @@
-#include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <Adafruit_Fingerprint.h>
 
-constexpr int A0 = 14;
-constexpr int A1 = 15;
-constexpr int A2 = 16;
-constexpr int A3 = 17;
-constexpr int A4 = 18;
-constexpr int A5 = 19;
+constexpr int pinA0 = 14;
+constexpr int pinA1 = 15;
+constexpr int pinA2 = 16;
+constexpr int pinA3 = 17;
+constexpr int pinA4 = 18;
+constexpr int pinA5 = 19;
 
 static constexpr uintptr_t PORTD_ADDR = 0x2B;
 static constexpr uintptr_t PIND_ADDR = 0x29;
@@ -17,7 +16,7 @@ static constexpr uintptr_t PORTC_ADDR = 0x28;
 static constexpr uintptr_t PINC_ADDR = 0x26;
 
 constexpr int BUTTON_PIN = 2;
-constexpr int MOSFET_PIN = A4;
+constexpr int MOSFET_PIN = pinA4;
 constexpr int ALARM_PIN = 9;
 constexpr int SW_UART_RX_PIN = 12, SW_UART_TX_PIN = 13;
 
@@ -57,7 +56,7 @@ private:
   static_assert(PIN >= 0 && PIN <= 19);
   static constexpr uintptr_t writePort = (PIN <= 7) ? PORTD_ADDR : ((PIN <= 13) ? PORTB_ADDR : PORTC_ADDR);
   static constexpr uintptr_t readPin = (PIN <= 7) ? PIND_ADDR : ((PIN <= 13) ? PINB_ADDR : PINC_ADDR);
-  static constexpr uint8_t bit = (PIN <= 7) ? PIN : ((PIN <= 13) ? PIN - 8 : PIN - 13);
+  static constexpr uint8_t bit = (PIN <= 7) ? PIN : ((PIN <= 13) ? PIN - 8 : PIN - 14);
 
 public:
   static int read() {
@@ -75,11 +74,11 @@ public:
 };
 
 void openLock() {
-  AtmegaPort<MOSFET_PIN>::write(0);
+  AtmegaPort<MOSFET_PIN>::write(1);
 }
 
 void closeLock() {
-  AtmegaPort<MOSFET_PIN>::write(1);
+  AtmegaPort<MOSFET_PIN>::write(0);
 }
 
 bool isButtonPressed() {
